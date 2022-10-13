@@ -2,12 +2,53 @@
 #include <vector>
 #include "implicant.h"
 #include <fstream>
+#include <cctype>
 using namespace std;
 int main()
 {
 	vector<int> function_minterms;
 	vector<int> function_dontcares;
+	int no_of_variables;
+	ifstream file;
+	file.open("input.txt");
+	char temp;
+	file.get(temp);
+	if (isdigit(temp))
+	{
+		no_of_variables = (int)(temp - '0');
+	}
+	file.get(temp);//disposing of the '\n'
+	do
+	{
+		file.get(temp);
+		if (isdigit(temp))
+		{
+			function_minterms.push_back((int)(temp - '0'));
+		}
+	} while (file.peek() != '\n');
+
+	file.get(temp);//disposing of the '\n'
+	while (!file.eof())
+	{
+		file.get(temp);
+		if (isdigit(temp))
+		{
+			function_dontcares.push_back((int)(temp - '0'));
+		}
+	}
+	function_dontcares.pop_back(); //haphazard way of fixing a glitch that causes the last don't care to be read twice
+
+	for (int i = 0; i < function_minterms.size(); i++)
+	{
+		cout << function_minterms[i] << " ";
+	}
+	cout << endl;
+	for (int i = 0; i < function_dontcares.size(); i++)
+	{
+		cout << function_dontcares[i] << " ";
+	}
 	
+
 }
 /*
 * So the plan is to operate on 20 bits

@@ -13,7 +13,7 @@ implicant::implicant(implicant i1, implicant i2, vector <int> reploc) //will def
 	minterms = i2.minterms;
 	minterms.insert(minterms.begin(), i1.minterms.begin(), i1.minterms.end());
 }
-string convert_to_binary(int n, int& chunk)
+string implicant::convert_to_binary(int n, int& chunk)
 {
 	string final_binary="00000000000000000000";
 	string binar = "";
@@ -51,15 +51,16 @@ string convert_to_binary(int n, int& chunk)
 			}
 		}
 	}
+	return final_binary;
 }
-string merge(string i1, string i2, vector<int> reploc)
+string implicant::merge(string i1, string i2, vector<int> reploc)
 {
 	string merged = i1;
 	merged.replace(reploc[0], 1, "-");
 	return merged;
 }
 
-vector<int> delta(string i1, string i2)
+vector<int> implicant::delta(string i1, string i2)
 {
 	vector <int> reploc; //reploc stands for replace location
 	string new_imp = i1;
