@@ -1,0 +1,74 @@
+#include "implicant.h"
+
+implicant::implicant(int n)
+{
+	chunk = 0;
+	imp = convert_to_binary(n, chunk);
+	minterms.push_back(n);
+}
+implicant::implicant(implicant i1, implicant i2, vector <int> reploc) //will define how to compare in source
+{
+	chunk = i1.chunk + i2.chunk - 1; //create getters
+	imp = merge(i1.imp, i2.imp, reploc);
+	minterms = i2.minterms;
+	minterms.insert(minterms.begin(), i1.minterms.begin(), i1.minterms.end());
+}
+string convert_to_binary(int n, int& chunk)
+{
+	string final_binary="00000000000000000000";
+	string binar = "";
+	int p = 0;
+	int temp;
+	int temp2;
+	int number_of_1 = 0;
+	if (n!= 0)
+	{
+		while (pow(2, p) <= n)
+		{
+			p++;
+		}
+		temp2 = p;
+		while (temp2 > 0)
+		{
+			temp = (n % int(pow(2, temp2 - 1)));
+			if (temp == n)
+			{
+				binar += "0";
+			}
+			else
+			{
+				binar += "1";
+				n -= pow(2, temp2 - 1);
+			}
+			temp2--;
+		}
+		final_binary.replace(final_binary.length() - p - 1, binar.length(), binar);
+		for (int i = 0; i < binar.length(); i++)
+		{
+			if (binar[i] == '1')
+			{
+				number_of_1++;
+			}
+		}
+	}
+}
+string merge(string i1, string i2, vector<int> reploc)
+{
+	string merged = i1;
+	merged.replace(reploc[0], 1, "-");
+	return merged;
+}
+
+vector<int> delta(string i1, string i2)
+{
+	vector <int> reploc; //reploc stands for replace location
+	string new_imp = i1;
+	for (int i = 0; i < i1.length(); i++)
+	{
+		if (i1[i] != i2[i])
+		{
+			reploc.push_back(i);
+		}
+	}
+	return reploc;
+}
