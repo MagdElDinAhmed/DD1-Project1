@@ -9,11 +9,15 @@ int main()
 	vector<int> function_minterms;
 	vector<int> function_dontcares;
 	vector <implicant> prime_implicants;
-	int no_of_variables;
+	int no_of_variables=-1;
 	ifstream file;
 	file.open("input.txt");
 	char temp;
 	string temp2;
+	bool valid_in = true;
+
+	//this bulk of code extracts the number of variables
+
 	file.get(temp);
 	if (isdigit(temp))
 	{
@@ -21,15 +25,25 @@ int main()
 		{
 			temp2 = temp;
 			file.get(temp);
+			if (isdigit(file.peek())) //checks if number has 3 digits
+			{
+				valid_in = false;
+			}
 			temp2 += temp;
-			function_minterms.push_back(stoi(temp2));
+			no_of_variables= stoi(temp2);
 		}
 		else {
 			no_of_variables = (int)(temp - '0');
 		}
 		
 	}
+	if (no_of_variables < 1 || no_of_variables>20)
+	{
+		valid_in = false;
+	}
 	file.get(temp);//disposing of the '\n'
+
+	//this do while loop extracts the minterms
 	do
 	{
 		file.get(temp);
@@ -43,16 +57,22 @@ int main()
 				function_minterms.push_back(stoi(temp2));
 			}
 			else {
-				no_of_variables = (int)(temp - '0');
+				function_minterms.push_back((int)(temp - '0'));
 			}
 		}
-	} while (file.peek() != '\n');
+		else if (isalpha(temp) || (ispunct(temp) && temp != ','))
+		{
+			valid_in = false;
+		}
+	} while (file.peek() != '\n' && valid_in);
 
 	file.get(temp);//disposing of the '\n'
-	while (!file.eof())
+
+	//this piece of code extracts the don't care terms
+	do
 	{
 		file.get(temp);
-		if (isdigit(temp))
+		if (isdigit(temp) && temp!=EOF)
 		{
 			if (isdigit(file.peek()))
 			{
@@ -62,24 +82,41 @@ int main()
 				function_dontcares.push_back(stoi(temp2));
 			}
 			else {
-				no_of_variables = (int)(temp - '0');
+				function_dontcares.push_back((int)(temp - '0'));
 			}
 		}
-	}
-	function_dontcares.pop_back(); //haphazard way of fixing a glitch that causes the last don't care to be read twice
+		else if (isalpha(temp) || (ispunct(temp) && temp != ','))
+		{
+			valid_in = false;
+		}
+	} while (file.peek() != EOF && valid_in);
 
-	for (int i = 0; i < function_minterms.size(); i++)
+
+
+	if (valid_in)
 	{
-		cout << function_minterms[i] << " ";
+		//program code
+		for (int i = 0; i < function_minterms.size(); i++)
+		{
+			cout << function_minterms[i] << " ";
+		}
+		cout << endl;
+		for (int i = 0; i < function_dontcares.size(); i++)
+		{
+			cout << function_dontcares[i] << " ";
+		}
 	}
-	cout << endl;
-	for (int i = 0; i < function_dontcares.size(); i++)
+	else
 	{
-		cout << function_dontcares[i] << " ";
+		cout << "invalid input";
 	}
+	
 	
 
 }
+
+
+
 /*
 * So the plan is to operate on 20 bits
 * Program converts these terms into a binary number and countes the number of 1s to identify chunk
