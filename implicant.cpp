@@ -5,6 +5,7 @@ implicant::implicant(int n)
 	chunk = 0;
 	imp = convert_to_binary(n, chunk);
 	minterms.push_back(n);
+	merged = false;
 }
 implicant::implicant(implicant i1, implicant i2, vector <int> reploc) //will define how to compare in source
 {
@@ -12,6 +13,7 @@ implicant::implicant(implicant i1, implicant i2, vector <int> reploc) //will def
 	imp = merge(i1.imp, i2.imp, reploc);
 	minterms = i2.minterms;
 	minterms.insert(minterms.begin(), i1.minterms.begin(), i1.minterms.end());
+	merged = false;
 }
 string implicant::convert_to_binary(int n, int& chunk)
 {
@@ -60,13 +62,13 @@ string implicant::merge(string i1, string i2, vector<int> reploc)
 	return merged;
 }
 
-vector<int> implicant::delta(string i1, string i2)
+vector<int> implicant::delta(string i2)
 {
 	vector <int> reploc; //reploc stands for replace location
-	string new_imp = i1;
-	for (int i = 0; i < i1.length(); i++)
+	string new_imp = this->imp;
+	for (int i = 0; i < this->imp.length(); i++)
 	{
-		if (i1[i] != i2[i])
+		if (this->imp[i] != i2[i])
 		{
 			reploc.push_back(i);
 		}

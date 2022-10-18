@@ -8,14 +8,26 @@ int main()
 {
 	vector<int> function_minterms;
 	vector<int> function_dontcares;
+	vector <implicant> prime_implicants;
 	int no_of_variables;
 	ifstream file;
 	file.open("input.txt");
 	char temp;
+	string temp2;
 	file.get(temp);
 	if (isdigit(temp))
 	{
-		no_of_variables = (int)(temp - '0');
+		if (isdigit(file.peek()))
+		{
+			temp2 = temp;
+			file.get(temp);
+			temp2 += temp;
+			function_minterms.push_back(stoi(temp2));
+		}
+		else {
+			no_of_variables = (int)(temp - '0');
+		}
+		
 	}
 	file.get(temp);//disposing of the '\n'
 	do
@@ -23,7 +35,16 @@ int main()
 		file.get(temp);
 		if (isdigit(temp))
 		{
-			function_minterms.push_back((int)(temp - '0'));
+			if (isdigit(file.peek()))
+			{
+				temp2 = temp;
+				file.get(temp);
+				temp2 += temp;
+				function_minterms.push_back(stoi(temp2));
+			}
+			else {
+				no_of_variables = (int)(temp - '0');
+			}
 		}
 	} while (file.peek() != '\n');
 
@@ -33,7 +54,16 @@ int main()
 		file.get(temp);
 		if (isdigit(temp))
 		{
-			function_dontcares.push_back((int)(temp - '0'));
+			if (isdigit(file.peek()))
+			{
+				temp2 = temp;
+				file.get(temp);
+				temp2 += temp;
+				function_dontcares.push_back(stoi(temp2));
+			}
+			else {
+				no_of_variables = (int)(temp - '0');
+			}
 		}
 	}
 	function_dontcares.pop_back(); //haphazard way of fixing a glitch that causes the last don't care to be read twice
