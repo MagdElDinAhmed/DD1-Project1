@@ -13,8 +13,9 @@ bool CheckValidTerm(string in, int no_of_variables, set<int>& terms);
 bool CheckRangeVarCount(string in, int size);
 bool CheckRangeTerm(string in, int size);
 bool CheckCharacter(string in);
-
-
+vector<implicant> PrimeImp( vector<int> mint, vector<int> dc, int num_of_var);
+vector<implicant> ImplicantsList(vector<int> minterms, vector<int> dont_cares);
+int NumChunks(vector<implicant> terms);
 
 
 
@@ -167,6 +168,55 @@ bool CheckCharacter(string in)
 	}
 	return valid;
 }
+
+
+vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
+{ 
+	vector<vector<vector<implicant>>> col;
+	vector<vector<implicant>> chunk;
+	vector<implicant> imp;
+	vector<implicant> trash=ImplicantsList(mint,dc);
+	
+	int num_of_chunks= NumChunks(trash);
+	chunk.resize(num_of_chunks);
+	for (int i = 0; i <= trash.size();i++)
+	{
+		chunk[trash[i].chunk].push_back(trash[i]);
+	}
+	col.push_back(chunk);
+	//col.resize(col.size() + 1);
+
+
+}
+
+int NumChunks(vector<implicant> terms)
+{
+	int m=-1;
+	for (int i = 0; i <= terms.size()-1; i++)
+	{
+		for (int j = i; j <= terms.size(); j++)
+		{
+			m=max(terms[i].chunk, terms[j].chunk);
+		}
+	}
+	return m;
+}
+
+vector<implicant> ImplicantsList(vector<int> minterms, vector<int> dont_cares)
+{
+	vector<implicant> j;
+	for(int i=0; i<=minterms.size(); i++)
+	{
+		j.push_back(implicant(minterms[i]));
+	}
+	for (int i = 0; i <= dont_cares.size(); i++)
+	{
+		j.push_back(implicant(dont_cares[i]));
+	}
+	return j;
+}
+
+
 
 /*
 * So the plan is to operate on 20 bits

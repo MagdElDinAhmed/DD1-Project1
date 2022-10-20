@@ -7,6 +7,7 @@
 using namespace std;
 class implicant
 {
+public:
 	implicant(int n);
 	implicant(implicant i1, implicant i2, vector<int> reploc);
 	string convert_to_binary(int n, int& chunk);
