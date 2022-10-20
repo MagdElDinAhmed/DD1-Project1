@@ -11,6 +11,8 @@ implicant::implicant(implicant i1, implicant i2, vector <int> reploc) //will def
 {
 	chunk = i1.chunk + i2.chunk - 1; //create getters
 	imp = merge(i1.imp, i2.imp, reploc);
+	i1.merged = true;
+	i2.merged = true;
 	minterms = i2.minterms;
 	minterms.insert(minterms.begin(), i1.minterms.begin(), i1.minterms.end());
 	merged = false;
