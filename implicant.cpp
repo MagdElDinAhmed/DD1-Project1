@@ -55,6 +55,7 @@ string implicant::convert_to_binary(int n, int& chunk)
 			}
 		}
 	}
+	chunk = number_of_1;
 	return final_binary;
 }
 string implicant::merge(string i1, string i2, vector<int> reploc)

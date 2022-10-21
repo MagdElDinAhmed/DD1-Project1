@@ -61,7 +61,7 @@ int main()
 
 
 
-	for(int i=0; i<= prime_implicants.size(); i++)
+	for(int i=0; i< prime_implicants.size(); i++)
 	cout << prime_implicants[i].imp << endl;
 
 }
@@ -193,23 +193,24 @@ vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
 	forMerge.resize(Has_it_all.size());
 
 	int num_of_chunks= NumChunks(Has_it_all);
-	chunk.resize(num_of_chunks);
+	chunk.resize(num_of_chunks + 1);
 
 	
-	for (int i = 0; i <= Has_it_all.size(); i++)
+	for (int i = 0; i < Has_it_all.size(); i++)
 	{
 		chunk[Has_it_all[i].chunk].push_back(Has_it_all[i]);
-		col.push_back(chunk);
+		//col.push_back(chunk); I'll move this out of the loop
 	}
+	col.push_back(chunk);
 	col.resize(col.size() + 1);
 	
-	for (int t = 0; t <= num_of_chunks; t++)     //chunks loop //looping on each chunk
+	for (int t = 0; t < num_of_chunks; t++)     //chunks loop //looping on each chunk (MAGD: ayo hold up, shouldn't we be looping column->chunk->value ?)
 	{
-		for (int i = 0; i <= chunk.size(); i++)       //loops on each implicant in chunk one //2
+		for (int i = 0; i < chunk.size(); i++)       //loops on each implicant in chunk one //2
 		{
-			for (int j = i+1; j <= chunk.size(); j++)  //Loops on each implicant in chunk two //3
+			for (int j = i+1; j < chunk.size(); j++)  //Loops on each implicant in chunk two //3
 			{
-				vector<int> p = Has_it_all[i].delta(Has_it_all[j].imp);
+				vector<int> p = Has_it_all[i].delta(Has_it_all[j].imp); //(MAGD: wait, why are we using Has_it_all? We already made the first column so we can work off of that directly)
 				if( p.size()==1)
 				Has_it_all[i].merge(Has_it_all[i].imp, Has_it_all[j].imp, forMerge);   //if 1, merge
 			}
@@ -233,11 +234,16 @@ vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
 int NumChunks(vector<implicant> terms)
 {
 	int m=-1;
-	for (int i = 0; i <= terms.size()-1; i++)
+	int temp;
+	for (int i = 0; i < terms.size()-1; i++)
 	{
-		for (int j = i; j <= terms.size(); j++)
+		for (int j = i; j < terms.size(); j++)
 		{
-			m=max(terms[i].chunk, terms[j].chunk);
+			temp=max(terms[i].chunk, terms[j].chunk);
+			if (temp > m)
+			{
+				m = temp;
+			}
 		}
 	}
 	return m;
@@ -245,11 +251,11 @@ int NumChunks(vector<implicant> terms)
 vector<implicant> ImplicantsList(vector<int> minterms, vector<int> dont_cares)
 {
 	vector<implicant> j;
-	for(int i=0; i<=minterms.size(); i++)
+	for(int i=0; i<minterms.size(); i++)
 	{
 		j.push_back(implicant(minterms[i]));
 	}
-	for (int i = 0; i <= dont_cares.size(); i++)
+	for (int i = 0; i < dont_cares.size(); i++)
 	{
 		j.push_back(implicant(dont_cares[i]));
 	}

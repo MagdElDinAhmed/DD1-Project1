@@ -1,1 +1,5 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(439,5): error MSB8020: The build tools for v143 (Platform Toolset = 'v143') cannot be found. To build using the v143 build tools, please install v143 build tools.  Alternatively, you may upgrade to the current Visual Studio tools by selecting the Project menu or right-click the solution, and then selecting "Retarget solution".
+﻿  Source.cpp
+C:\Users\focka\OneDrive\Documents\AUC Files\Digital Design 1\Project\Project1\Source.cpp(58,9): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\focka\OneDrive\Documents\AUC Files\Digital Design 1\Project\Project1\Source.cpp(73,7): warning C4101: 'new_line_trash': unreferenced local variable
+C:\Users\focka\OneDrive\Documents\AUC Files\Digital Design 1\Project\Project1\Source.cpp(133,11): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  Project1.vcxproj -> C:\Users\focka\OneDrive\Documents\AUC Files\Digital Design 1\Project\Project1\x64\Debug\Project1.exe
