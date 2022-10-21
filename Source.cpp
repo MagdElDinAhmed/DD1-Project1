@@ -30,7 +30,7 @@ int main()
 	vector<int> function_dontcares;
 	vector <implicant> prime_implicants;
 	int no_of_variables=-1;
-
+	int w=0;
 	bool valid_in = true;
 
 
@@ -53,8 +53,16 @@ int main()
 	{
 		cout << "invalid input";
 	}
-	
-	
+
+
+	w = pow(2, no_of_variables);
+
+	prime_implicants = PrimeImp(function_minterms, function_dontcares, no_of_variables);
+
+
+
+	for(int i=0; i<= prime_implicants.size(); i++)
+	cout << prime_implicants[i].imp << endl;
 
 }
 
@@ -173,7 +181,6 @@ bool CheckCharacter(string in)
 	return valid;
 }
 
-
 vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
 { 
 	vector<vector<vector<implicant>>> col;
@@ -209,7 +216,6 @@ vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
 
 			if (Has_it_all[i].merged)                                 //i merged, put into chunk, then new col
 			{
-				col.resize(col.size() + 1);
 				chunk[Has_it_all[i].chunk].push_back(Has_it_all[i]);
 				col.push_back(chunk);
 				w++;
@@ -219,11 +225,11 @@ vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
 				PrimeImplicantsList.push_back(Has_it_all[i]);
 			}
 		}
+		col.resize(col.size() + 1);
 	}
 
 	return PrimeImplicantsList;
 }
-
 int NumChunks(vector<implicant> terms)
 {
 	int m=-1;
@@ -236,7 +242,6 @@ int NumChunks(vector<implicant> terms)
 	}
 	return m;
 }
-
 vector<implicant> ImplicantsList(vector<int> minterms, vector<int> dont_cares)
 {
 	vector<implicant> j;
