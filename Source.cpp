@@ -66,7 +66,7 @@ int main()
 
 }
 
-void Extract(vector<int>& fucntion_minterms, vector<int>& fucntion_dontcares, int& no_of_variables, bool& valid_in)
+void Extract(vector<int>& fucntion_minterms, vector<int>& fucntion_dontcares, int& no_of_variables, bool& valid_in) //account for there being no don't cares
 {
 	ifstream file;
 	string temp, temp2;
@@ -202,31 +202,67 @@ vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
 		//col.push_back(chunk); I'll move this out of the loop
 	}
 	col.push_back(chunk);
-	col.resize(col.size() + 1);
-	
-	for (int t = 0; t < num_of_chunks; t++)     //chunks loop //looping on each chunk (MAGD: ayo hold up, shouldn't we be looping column->chunk->value ?)
+	//col.resize(col.size() + 1);
+	int colsize = col.size();
+	for (int t = 0; t < colsize; t++)     //chunks loop //looping on each chunk (MAGD: ayo hold up, shouldn't we be looping column->chunk->value ?)
 	{
-		for (int i = 0; i < chunk.size(); i++)       //loops on each implicant in chunk one //2
+		for (int i = 0; i < col[t].size(); i++)       //loops on each implicant in chunk one //2
 		{
-			for (int j = i+1; j < chunk.size(); j++)  //Loops on each implicant in chunk two //3
+			if (col[t][i].size() > 0)
 			{
-				vector<int> p = Has_it_all[i].delta(Has_it_all[j].imp); //(MAGD: wait, why are we using Has_it_all? We already made the first column so we can work off of that directly)
-				if( p.size()==1)
-				Has_it_all[i].merge(Has_it_all[i].imp, Has_it_all[j].imp, forMerge);   //if 1, merge
-			}
+				for (int j = 0; j < col[t][i].size(); j++)  //Loops on each implicant in chunk two //3
+				{
+					if (i + 1 < col[t].size())
+					{
+						for (int l = 0; l < col[t][i + 1].size(); l++)
+						{
 
-			if (Has_it_all[i].merged)                                 //i merged, put into chunk, then new col
-			{
-				chunk[Has_it_all[i].chunk].push_back(Has_it_all[i]);
-				col.push_back(chunk);
-				w++;
+							vector<int> p = col[t][i][j].delta(col[t][i + 1][l].imp);
+							if (p.size() == 1)
+							{
+								implicant merged(col[t][i][j], col[t][i + 1][l], p);   //if 1, merge
+								if (col.size() < t + 2)
+								{
+									col.resize(col.size() + 1);
+									colsize = col.size() ;
+								}
+								if (merged.chunk >= col[t + 1].size())
+								{
+									col[t + 1].resize(merged.chunk + 1);
+								}
+								col[t + 1][merged.chunk].push_back(merged);
+								col[t][i][j].merged = true;
+								col[t][i + 1][l].merged = true;
+							}
+						}
+						if (!col[t][i][j].merged)
+						{
+							PrimeImplicantsList.push_back(col[t][i][j]);
+						}
+					}
+					
+
+				}
 			}
-			else                                                   //add to prime implicant list
-			{
-				PrimeImplicantsList.push_back(Has_it_all[i]);
-			}
+			
+
+			//if (Has_it_all[i].merged)                                 //i merged, put into chunk, then new col
+			//{
+			//	chunk[Has_it_all[i].chunk].push_back(Has_it_all[i]);
+			//	col.push_back(chunk);
+			//	w++;
+			//}
+			//else                                                   //add to prime implicant list
+			//{
+			//	PrimeImplicantsList.push_back(Has_it_all[i]);
+			//}
 		}
-		col.resize(col.size() + 1);
+		/*col.resize(col.size() + 1);*/
+	}
+
+	for (int i = 0; i< col[col.size()-1][col[col.size() - 1].size()-1].size(); i++)
+	{
+		PrimeImplicantsList.push_back(col[col.size() - 1][col[col.size() - 1].size() - 1][i]);
 	}
 
 	return PrimeImplicantsList;

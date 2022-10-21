@@ -2,4 +2,6 @@
 C:\Users\focka\OneDrive\Documents\AUC Files\Digital Design 1\Project\Project1\Source.cpp(58,9): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 C:\Users\focka\OneDrive\Documents\AUC Files\Digital Design 1\Project\Project1\Source.cpp(73,7): warning C4101: 'new_line_trash': unreferenced local variable
 C:\Users\focka\OneDrive\Documents\AUC Files\Digital Design 1\Project\Project1\Source.cpp(133,11): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\focka\OneDrive\Documents\AUC Files\Digital Design 1\Project\Project1\Source.cpp(206,26): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\focka\OneDrive\Documents\AUC Files\Digital Design 1\Project\Project1\Source.cpp(227,31): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
   Project1.vcxproj -> C:\Users\focka\OneDrive\Documents\AUC Files\Digital Design 1\Project\Project1\x64\Debug\Project1.exe

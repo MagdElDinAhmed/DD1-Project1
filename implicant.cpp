@@ -9,8 +9,8 @@ implicant::implicant(int n)
 }
 implicant::implicant(implicant i1, implicant i2, vector <int> reploc) //will define how to compare in source
 {
-	chunk = i1.chunk + i2.chunk - 1; //create getters
-	imp = merge(i1.imp, i2.imp, reploc);
+	chunk = 0; //create getters
+	imp = merge(i1.imp, i2.imp, reploc, chunk);
 	i1.merged = true;
 	i2.merged = true;
 	minterms = i2.minterms;
@@ -46,7 +46,7 @@ string implicant::convert_to_binary(int n, int& chunk)
 			}
 			temp2--;
 		}
-		final_binary.replace(final_binary.length() - p - 1, binar.length(), binar);
+		final_binary.replace(final_binary.length() - p, binar.length(), binar);
 		for (int i = 0; i < binar.length(); i++)
 		{
 			if (binar[i] == '1')
@@ -58,10 +58,19 @@ string implicant::convert_to_binary(int n, int& chunk)
 	chunk = number_of_1;
 	return final_binary;
 }
-string implicant::merge(string i1, string i2, vector<int> reploc)
+string implicant::merge(string i1, string i2, vector<int> reploc, int& chunk)
 {
 	string merged = i1;
+	int number_of_1 = 0;
 	merged.replace(reploc[0], 1, "-");
+	for (int i = 0; i < merged.length(); i++)
+	{
+		if (merged[i] == '1')
+		{
+			number_of_1++;
+		}
+	}
+	chunk = number_of_1;
 	return merged;
 }
 
