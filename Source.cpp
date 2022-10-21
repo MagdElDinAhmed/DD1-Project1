@@ -5,6 +5,10 @@
 #include <cctype>
 #include<math.h>
 #include <set>
+#include <sstream>
+#include <string>
+#include <exception>
+
 //#include "InputLib.h"
 using namespace std;
 void Extract(vector<int>& fucntion_minterms, vector<int>& fucntion_dontcares, int& no_of_variables, bool& valid_in);
@@ -16,7 +20,7 @@ bool CheckCharacter(string in);
 vector<implicant> PrimeImp( vector<int> mint, vector<int> dc, int num_of_var);
 vector<implicant> ImplicantsList(vector<int> minterms, vector<int> dont_cares);
 int NumChunks(vector<implicant> terms);
-
+//vector<string> toString(vector<implicant> m);
 
 
 
@@ -175,18 +179,49 @@ vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
 	vector<vector<vector<implicant>>> col;
 	vector<vector<implicant>> chunk;
 	vector<implicant> imp;
-	vector<implicant> trash=ImplicantsList(mint,dc);
-	
-	int num_of_chunks= NumChunks(trash);
+	vector<implicant> PrimeImplicantsList;
+	vector<implicant> Has_it_all= ImplicantsList(mint,dc);
+	vector<int> forMerge;
+	int w = 0;
+	forMerge.resize(Has_it_all.size());
+
+	int num_of_chunks= NumChunks(Has_it_all);
 	chunk.resize(num_of_chunks);
-	for (int i = 0; i <= trash.size();i++)
+
+	
+	for (int i = 0; i <= Has_it_all.size(); i++)
 	{
-		chunk[trash[i].chunk].push_back(trash[i]);
+		chunk[Has_it_all[i].chunk].push_back(Has_it_all[i]);
+		col.push_back(chunk);
 	}
-	col.push_back(chunk);
-	//col.resize(col.size() + 1);
+	col.resize(col.size() + 1);
+	
+	for (int t = 0; t <= num_of_chunks; t++)     //chunks loop //looping on each chunk
+	{
+		for (int i = 0; i <= chunk.size(); i++)       //loops on each implicant in chunk one //2
+		{
+			for (int j = i+1; j <= chunk.size(); j++)  //Loops on each implicant in chunk two //3
+			{
+				vector<int> p = Has_it_all[i].delta(Has_it_all[j].imp);
+				if( p.size()==1)
+				Has_it_all[i].merge(Has_it_all[i].imp, Has_it_all[j].imp, forMerge);   //if 1, merge
+			}
 
+			if (Has_it_all[i].merged)                                 //i merged, put into chunk, then new col
+			{
+				col.resize(col.size() + 1);
+				chunk[Has_it_all[i].chunk].push_back(Has_it_all[i]);
+				col.push_back(chunk);
+				w++;
+			}
+			else                                                   //add to prime implicant list
+			{
+				PrimeImplicantsList.push_back(Has_it_all[i]);
+			}
+		}
+	}
 
+	return PrimeImplicantsList;
 }
 
 int NumChunks(vector<implicant> terms)
@@ -215,14 +250,28 @@ vector<implicant> ImplicantsList(vector<int> minterms, vector<int> dont_cares)
 	}
 	return j;
 }
+/*
+vector<string> toString(vector<implicant> m)
+{
+	vector<string> temp;
+	temp.resize(m.size());
 
+	int i = 0;
+
+	for (int j = 0; j <= m.size(); j++)
+	{
+		i = m[j];
+		temp.push_back(to_string(i));
+	}
+}
+*/
 
 
 /*
 * So the plan is to operate on 20 bits
 * Program converts these terms into a binary number and countes the number of 1s to identify chunk
 * We input minterms and don't cares by their number
-* The program generates the deatils of these minterms accordingly
+* The program generates the details of these minterms accordingly
 * We'll need a function that converts decimal to binary inside the implicant class
 * We compare each element in a chunk to each element in the chunk after it
 * If they combine then we check the presence of the combination in the next column
