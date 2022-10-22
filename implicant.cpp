@@ -1,10 +1,18 @@
 #include "implicant.h"
 
-implicant::implicant(int n)
+implicant::implicant(int n, bool minterm)
 {
 	chunk = 0;
 	imp = convert_to_binary(n, chunk);
-	minterms.push_back(n);
+	terms.push_back(n);
+	if (minterm)
+	{
+		minterms.push_back(n);
+	}
+	else
+	{
+		dontcares.push_back(n);
+	}
 	merged = false;
 }
 implicant::implicant(implicant i1, implicant i2, vector <int> reploc) //will define how to compare in source
@@ -13,8 +21,13 @@ implicant::implicant(implicant i1, implicant i2, vector <int> reploc) //will def
 	imp = merge(i1.imp, i2.imp, reploc, chunk);
 	i1.merged = true;
 	i2.merged = true;
+	terms = i2.terms;
 	minterms = i2.minterms;
+	dontcares = i2.dontcares;
+	terms.insert(terms.begin(), i1.terms.begin(), i1.terms.end());
 	minterms.insert(minterms.begin(), i1.minterms.begin(), i1.minterms.end());
+	dontcares.insert(dontcares.begin(), i1.dontcares.begin(), i1.dontcares.end());
+	
 	merged = false;
 }
 string implicant::convert_to_binary(int n, int& chunk)

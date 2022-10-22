@@ -305,11 +305,11 @@ vector<implicant> ImplicantsList(vector<int> minterms, vector<int> dont_cares)
 	vector<implicant> j;
 	for(int i=0; i<minterms.size(); i++)
 	{
-		j.push_back(implicant(minterms[i]));
+		j.push_back(implicant(minterms[i], true));
 	}
 	for (int i = 0; i < dont_cares.size(); i++)
 	{
-		j.push_back(implicant(dont_cares[i]));
+		j.push_back(implicant(dont_cares[i], false));
 	}
 	return j;
 }
@@ -322,7 +322,10 @@ vector<implicant> RemoveDup(vector<implicant> p)
 		for (int j = 0; j < p.size(); j++)
 		{
 			if (p[i].imp == p[j].imp && i!=j) 
-			{    
+			{
+				p[i].terms.insert(p[i].terms.begin(), p[j].terms.begin(), p[j].terms.end());
+				p[i].minterms.insert(p[i].minterms.begin(), p[j].minterms.begin(), p[j].minterms.end());
+				p[i].dontcares.insert(p[i].dontcares.begin(), p[j].dontcares.begin(), p[j].dontcares.end());
 				p.erase(p.begin()+j);   
 			}
 		}
