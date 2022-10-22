@@ -22,7 +22,7 @@ vector<implicant> RemoveDup(vector<implicant> p, int no_of_var);
 vector<implicant> RemoveZeros(vector<implicant> p, int no_of_var);
 void GenerateBoolean(vector<implicant> PIs, int no_of_variables);
 
-
+void EPI(vector <implicant> prime_implicants, vector<int> function_minterms);
 int main()
 {
 	vector<int> function_minterms;
@@ -73,7 +73,7 @@ int main()
 		//boolean expressions for Prime Implicants
 
 		GenerateBoolean(prime_implicants, no_of_variables);
-
+		EPI(prime_implicants, function_minterms);
 		//cout << endl <<"Don't care terms covered by Prime Implicants:" << endl;
 
 
@@ -412,7 +412,166 @@ void GenerateBoolean(vector<implicant> PIs, int no_of_variables)
 		cout << " +" << " ";
 	}
 }
+void EPI(vector <implicant> prime_implicants, vector<int> minterms) {
 
+	vector<string>temp(16);
+	vector<int>count(16, 0);
+
+	vector<string>primeImplicants;
+	for (int i = 0; i < prime_implicants.size(); i++) {
+		primeImplicants.push_back(prime_implicants[i].imp);
+	}
+
+	for (int i = 0; i < primeImplicants.size(); i++) {
+		//0
+		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 0 is covered" << endl;
+			count[0]++;
+			temp[0] = primeImplicants[i];
+		}
+
+		//1
+		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 1 is covered" << endl;
+			count[1]++;
+			temp[1] = primeImplicants[i];
+		}
+
+		//2
+		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 2 is covered" << endl;
+			count[2]++;
+			temp[2] = primeImplicants[i];
+		}
+
+		//3
+		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 3 is covered" << endl;
+			count[3]++;
+			temp[3] = primeImplicants[i];
+		}
+
+		//4
+		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 4 is covered" << endl;
+			count[4]++;
+			temp[4] = primeImplicants[i];
+		}
+
+		//5
+		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 5 is covered" << endl;
+			count[5]++;
+			temp[5] = primeImplicants[i];
+		}
+
+		//6
+		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 6 is covered" << endl;
+			count[6]++;
+			temp[6] = primeImplicants[i];
+		}
+
+		//7
+		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 7 is covered" << endl;
+			count[7]++;
+			temp[7] = primeImplicants[i];
+		}
+
+		//8
+		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 8 is covered" << endl;
+			count[8]++;
+			temp[8] = primeImplicants[i];
+		}
+
+		//9
+		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 9 is covered" << endl;
+			count[9]++;
+			temp[9] = primeImplicants[i];
+		}
+
+		//10
+		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 10 is covered" << endl;
+			count[10]++;
+			temp[10] = primeImplicants[i];
+		}
+
+		//11
+		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 11 is covered" << endl;
+			count[11]++;
+			temp[11] = primeImplicants[i];
+		}
+
+		//12
+		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 12 is covered" << endl;
+			count[12]++;
+			temp[12] = primeImplicants[i];
+		}
+
+		//13
+		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 13 is covered" << endl;
+			count[13]++;
+			temp[13] = primeImplicants[i];
+		}
+
+		//14
+		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 14 is covered" << endl;
+			count[14]++;
+			temp[14] = primeImplicants[i];
+		}
+
+		//15
+		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
+			//cout << "minterm 15 is covered" << endl;
+			count[15]++;
+			temp[15] = primeImplicants[i];
+		}
+	}
+
+	cout << "EPI:" << endl;
+
+	for (int i = 0; i < 16; i++) {
+		if (count[i] == 1) {
+			if (temp[i][0] == '-')
+				cout << "";
+			if (temp[i][0] == '0')
+				cout << "A'";
+			if (temp[i][0] == '1')
+				cout << "A";
+
+			if (temp[i][1] == '-')
+				cout << "";
+			if (temp[i][1] == '0')
+				cout << "B'";
+			if (temp[i][1] == '1')
+				cout << "B";
+
+			if (temp[i][2] == '-')
+				cout << "";
+			if (temp[i][2] == '0')
+				cout << "C'";
+			if (temp[i][2] == '1')
+				cout << "C";
+
+			if (temp[i][3] == '-')
+				cout << "";
+			if (temp[i][3] == '0')
+				cout << "D'";
+			if (temp[i][3] == '1')
+				cout << "D";
+
+			cout << endl;
+		}
+	}
+}
 /*
 * So the plan is to operate on 20 bits
 * Program converts these terms into a binary number and countes the number of 1s to identify chunk
