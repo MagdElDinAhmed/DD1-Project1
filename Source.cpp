@@ -5,6 +5,7 @@
 #include <cctype>
 #include<math.h>
 #include <set>
+#include <map>
 
 //#include "InputLib.h"
 using namespace std;
@@ -14,22 +15,24 @@ bool CheckValidTerm(string in, int no_of_variables, set<int>& terms);
 bool CheckRangeVarCount(string in, int size);
 bool CheckRangeTerm(string in, int size);
 bool CheckCharacter(string in);
-vector<implicant> PrimeImp( vector<int> mint, vector<int> dc, int num_of_var);
+vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var);
 vector<implicant> ImplicantsList(vector<int> minterms, vector<int> dont_cares);
 int NumChunks(vector<implicant> terms);
 //vector<string> toString(vector<implicant> m);
 vector<implicant> RemoveDup(vector<implicant> p, int no_of_var);
 vector<implicant> RemoveZeros(vector<implicant> p, int no_of_var);
 void GenerateBoolean(vector<implicant> PIs, int no_of_variables);
+vector<implicant> CleanUp(vector<implicant> prime_implicants);
+void EPI(vector <implicant> prime_implicants, vector<int> function_minterms, int no_of_variables);
 
-void EPI(vector <implicant> prime_implicants, vector<int> function_minterms);
+
 int main()
 {
 	vector<int> function_minterms;
 	vector<int> function_dontcares;
 	vector <implicant> prime_implicants;
-	int no_of_variables=-1;
-	int w=0;
+	int no_of_variables = -1;
+	int w = 0;
 	bool valid_in = true;
 
 
@@ -60,8 +63,31 @@ int main()
 		//vector<implicant> second = RemoveDup(prime_implicants);
 
 		prime_implicants = RemoveDup(prime_implicants, no_of_variables);
-			//	vector<implicant> third = RemoveZeros(second, no_of_variables);
-		//	prime_implicants = RemoveZeros(prime_implicants, no_of_variables);
+		//	vector<implicant> third = RemoveZeros(second, no_of_variables);
+	//	prime_implicants = RemoveZeros(prime_implicants, no_of_variables);
+
+
+		prime_implicants = CleanUp(prime_implicants);
+
+		cout << "Minterms covered by Prime Implicants: " << endl;
+		for (int j = 0; j < prime_implicants.size(); j++)
+		{
+			for (int i = 0; i < prime_implicants[j].minterms.size(); i++)
+			{
+				cout << prime_implicants[j].minterms[i] << "\t" << prime_implicants[j].imp << endl;
+			}
+		}
+
+		cout << endl << "Don't Care terms covered by Prime Implicants : " << endl;
+		for (int j = 0; j < prime_implicants.size(); j++)
+		{
+			for (int i = 0; i < prime_implicants[j].dontcares.size(); i++)
+			{
+				cout << prime_implicants[j].dontcares[i] << "\t" << prime_implicants[j].imp << endl;
+			}
+		}
+		cout << endl;
+
 
 		cout << "Binary Representation:" << endl;
 
@@ -72,10 +98,15 @@ int main()
 
 		//boolean expressions for Prime Implicants
 
+
+		cout << "Prime Implicants: " << endl;
 		GenerateBoolean(prime_implicants, no_of_variables);
-		EPI(prime_implicants, function_minterms);
+
 		//cout << endl <<"Don't care terms covered by Prime Implicants:" << endl;
 
+		cout << endl;
+
+		EPI(prime_implicants, function_minterms, no_of_variables);
 
 	}
 	else
@@ -89,7 +120,7 @@ void Extract(vector<int>& fucntion_minterms, vector<int>& fucntion_dontcares, in
 	ifstream file;
 	string temp, temp2;
 	char new_line_trash;
-	bool new_line=false;
+	bool new_line = false;
 	set<int>terms;
 	file.open("input.txt");
 	getline(file, temp);
@@ -106,7 +137,7 @@ void Extract(vector<int>& fucntion_minterms, vector<int>& fucntion_dontcares, in
 		{
 			if (temp[i] == '\n')
 			{
-				temp2 = temp.substr(i+1, string::npos);
+				temp2 = temp.substr(i + 1, string::npos);
 				temp = temp.substr(0, temp.length() - (temp.length() - i));
 				new_line = true;
 			}
@@ -126,7 +157,7 @@ void Extract(vector<int>& fucntion_minterms, vector<int>& fucntion_dontcares, in
 			fucntion_dontcares.push_back(stoi(temp2));
 		}
 	}
-	
+
 
 	while (!file.eof() && valid_in)
 	{
@@ -205,20 +236,20 @@ bool CheckCharacter(string in)
 }
 
 vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
-{ 
+{
 	vector<vector<vector<implicant>>> col;
 	vector<vector<implicant>> chunk;
 	vector<implicant> imp;
 	vector<implicant> PrimeImplicantsList;
-	vector<implicant> Has_it_all= ImplicantsList(mint,dc);
+	vector<implicant> Has_it_all = ImplicantsList(mint, dc);
 	vector<int> forMerge;
 	int w = 0;
 	forMerge.resize(Has_it_all.size());
 
-	int num_of_chunks= NumChunks(Has_it_all);
+	int num_of_chunks = NumChunks(Has_it_all);
 	chunk.resize(num_of_chunks + 1);
 
-	
+
 	for (int i = 0; i < Has_it_all.size(); i++)
 	{
 		chunk[Has_it_all[i].chunk].push_back(Has_it_all[i]);
@@ -247,7 +278,7 @@ vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
 								if (col.size() < t + 2)
 								{
 									col.resize(col.size() + 1);
-									colsize = col.size() ;
+									colsize = col.size();
 								}
 								if (merged.chunk >= col[t + 1].size())
 								{
@@ -263,11 +294,11 @@ vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
 							PrimeImplicantsList.push_back(col[t][i][j]);
 						}
 					}
-					
+
 
 				}
 			}
-			
+
 
 			//if (Has_it_all[i].merged)                                 //i merged, put into chunk, then new col
 			//{
@@ -283,7 +314,7 @@ vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
 		/*col.resize(col.size() + 1);*/
 	}
 
-	for (int i = 0; i< col[col.size()-1][col[col.size() - 1].size()-1].size(); i++)
+	for (int i = 0; i < col[col.size() - 1][col[col.size() - 1].size() - 1].size(); i++)
 	{
 		PrimeImplicantsList.push_back(col[col.size() - 1][col[col.size() - 1].size() - 1][i]);
 	}
@@ -297,13 +328,13 @@ vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
 }
 int NumChunks(vector<implicant> terms)
 {
-	int m=-1;
+	int m = -1;
 	int temp;
-	for (int i = 0; i < terms.size()-1; i++)
+	for (int i = 0; i < terms.size() - 1; i++)
 	{
 		for (int j = i; j < terms.size(); j++)
 		{
-			temp=max(terms[i].chunk, terms[j].chunk);
+			temp = max(terms[i].chunk, terms[j].chunk);
 			if (temp > m)
 			{
 				m = temp;
@@ -315,7 +346,7 @@ int NumChunks(vector<implicant> terms)
 vector<implicant> ImplicantsList(vector<int> minterms, vector<int> dont_cares)
 {
 	vector<implicant> j;
-	for(int i=0; i<minterms.size(); i++)
+	for (int i = 0; i < minterms.size(); i++)
 	{
 		j.push_back(implicant(minterms[i], true));
 	}
@@ -333,12 +364,53 @@ vector<implicant> RemoveDup(vector<implicant> p, int no_of_var)
 	{
 		for (int j = 0; j < p.size(); j++)
 		{
-			if (p[i].imp == p[j].imp && i!=j) 
+			if (p[i].imp == p[j].imp && i != j)
 			{
-				p[i].terms.insert(p[i].terms.begin(), p[j].terms.begin(), p[j].terms.end());
-				p[i].minterms.insert(p[i].minterms.begin(), p[j].minterms.begin(), p[j].minterms.end());
-				p[i].dontcares.insert(p[i].dontcares.begin(), p[j].dontcares.begin(), p[j].dontcares.end());
-				p.erase(p.begin()+j);   
+				set<int> temp;
+				vector<int> final_terms;
+				vector<int> final_minterms;
+				vector<int> final_dontcares;
+				for (int k = 0; k < p[i].terms.size(); k++)
+				{
+					if ((temp).find(p[i].terms[k]) == temp.end())
+					{
+						temp.insert(p[i].terms[k]);
+						final_terms.push_back(p[i].terms[k]);
+					}
+				}
+
+				temp.clear();
+
+				for (int k = 0; k < p[i].minterms.size(); k++)
+				{
+					if ((temp).find(p[i].minterms[k]) == temp.end())
+					{
+						temp.insert(p[i].minterms[k]);
+						final_minterms.push_back(p[i].minterms[k]);
+					}
+				}
+
+				temp.clear();
+
+				for (int k = 0; k < p[i].dontcares.size(); k++)
+				{
+					if ((temp).find(p[i].dontcares[k]) == temp.end())
+					{
+						temp.insert(p[i].dontcares[k]);
+						final_dontcares.push_back(p[i].dontcares[k]);
+					}
+				}
+
+				temp.clear();
+
+				p[i].terms.insert(p[i].terms.begin(), final_terms.begin(), final_terms.end());
+				p[i].minterms.insert(p[i].minterms.begin(), final_minterms.begin(), final_minterms.end());
+				p[i].dontcares.insert(p[i].dontcares.begin(), final_dontcares.begin(), final_dontcares.end());
+				p.erase(p.begin() + j);
+
+				final_terms.clear();
+				final_minterms.clear();
+				final_dontcares.clear();
 			}
 		}
 	}
@@ -346,24 +418,6 @@ vector<implicant> RemoveDup(vector<implicant> p, int no_of_var)
 
 	p = RemoveZeros(p, no_of_var);
 
-	cout << "Minterms covered by Prime Implicants: " << endl;
-	for (int j = 0; j < p.size(); j++)
-	{
-		for (int i = 0; i < p[j].minterms.size(); i++)
-		{
-			cout << p[j].minterms[i] << "\t" << p[j].imp << endl;
-		}
-	}
-
-	cout << endl <<"Don't Care terms covered by Prime Implicants : " << endl;
-	for (int j = 0; j < p.size(); j++)
-	{
-		for (int i = 0; i < p[j].dontcares.size(); i++)
-		{
-			cout << p[j].dontcares[i] << "\t" << p[j].imp << endl;
-		}
-	}
-	cout << endl;
 	return p;
 }
 
@@ -373,14 +427,14 @@ vector<implicant> RemoveZeros(vector<implicant> p, int no_of_var)
 
 	if (no_of_var >= 0 && no_of_var < 20)
 	{
-	
+
 		n = no_of_var;
-		for (int j = 0; j < p.size(); j++)           
+		for (int j = 0; j < p.size(); j++)
 		{
-				p[j].imp.erase(p[j].imp.begin(), p[j].imp.begin() + (20 - n));
+			p[j].imp.erase(p[j].imp.begin(), p[j].imp.begin() + (20 - n));
 		}
 	}
-	else if(no_of_var > 20)
+	else if (no_of_var > 20)
 	{
 		cout << "Invalid num of inputs" << endl;
 		return p;
@@ -395,7 +449,7 @@ void GenerateBoolean(vector<implicant> PIs, int no_of_variables)
 	{
 		for (int i = 0; i < no_of_variables; i++)
 		{
-			if (PIs[j].imp[i] == '0')             
+			if (PIs[j].imp[i] == '0')
 			{
 				cout << "X" << i << "'";
 			}
@@ -403,175 +457,101 @@ void GenerateBoolean(vector<implicant> PIs, int no_of_variables)
 			{
 				cout << "X" << i;
 			}
-			else if(PIs[j].imp[i] == '-')
+			else if (PIs[j].imp[i] == '-')
 			{
 				cout << "";
 			}
 		}
-		if(j < PIs.size()-1)
-		cout << " +" << " ";
+		if (j < PIs.size() - 1)
+			cout << " ," << " ";
 	}
 }
-void EPI(vector <implicant> prime_implicants, vector<int> minterms) {
 
-	vector<string>temp(16);
-	vector<int>count(16, 0);
-
-	vector<string>primeImplicants;
-	for (int i = 0; i < prime_implicants.size(); i++) {
-		primeImplicants.push_back(prime_implicants[i].imp);
+vector<implicant> CleanUp(vector<implicant> prime_implicants)
+{
+	set<int> minterms;
+	vector<int> final_minterms;
+	for (int i = 0; i < prime_implicants.size(); i++)
+	{
+		for (int j = 0; j < prime_implicants[i].minterms.size(); j++)
+		{
+			if ((minterms).find(prime_implicants[i].minterms[j]) == minterms.end())
+			{
+				minterms.insert(prime_implicants[i].minterms[j]);
+				final_minterms.push_back(prime_implicants[i].minterms[j]);
+			}
+		}
+		prime_implicants[i].minterms = final_minterms;
+		final_minterms.clear();
+		minterms.clear();
 	}
 
-	for (int i = 0; i < primeImplicants.size(); i++) {
-		//0
-		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 0 is covered" << endl;
-			count[0]++;
-			temp[0] = primeImplicants[i];
-		}
+	return prime_implicants;
+}
 
-		//1
-		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 1 is covered" << endl;
-			count[1]++;
-			temp[1] = primeImplicants[i];
-		}
 
-		//2
-		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 2 is covered" << endl;
-			count[2]++;
-			temp[2] = primeImplicants[i];
-		}
+void EPI(vector <implicant> prime_implicants, vector<int> function_minterms, int no_of_variables)
+{
+	map<int, vector<implicant>> EPI_table;
+	set<int> covered_by_EPIs;
+	vector<int> not_covered_by_EPIs;
+	vector<implicant> blank;
+	vector<implicant> EPI;
+	vector<implicant> temp;
 
-		//3
-		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 3 is covered" << endl;
-			count[3]++;
-			temp[3] = primeImplicants[i];
-		}
+	//initialising our map
+	for (int i = 0; i < function_minterms.size(); i++)
+	{
+		EPI_table.insert({ function_minterms[i],blank });
+	}
 
-		//4
-		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 4 is covered" << endl;
-			count[4]++;
-			temp[4] = primeImplicants[i];
-		}
-
-		//5
-		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 5 is covered" << endl;
-			count[5]++;
-			temp[5] = primeImplicants[i];
-		}
-
-		//6
-		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 6 is covered" << endl;
-			count[6]++;
-			temp[6] = primeImplicants[i];
-		}
-
-		//7
-		if ((primeImplicants[i][0] == '0' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 7 is covered" << endl;
-			count[7]++;
-			temp[7] = primeImplicants[i];
-		}
-
-		//8
-		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 8 is covered" << endl;
-			count[8]++;
-			temp[8] = primeImplicants[i];
-		}
-
-		//9
-		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 9 is covered" << endl;
-			count[9]++;
-			temp[9] = primeImplicants[i];
-		}
-
-		//10
-		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 10 is covered" << endl;
-			count[10]++;
-			temp[10] = primeImplicants[i];
-		}
-
-		//11
-		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '0' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 11 is covered" << endl;
-			count[11]++;
-			temp[11] = primeImplicants[i];
-		}
-
-		//12
-		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 12 is covered" << endl;
-			count[12]++;
-			temp[12] = primeImplicants[i];
-		}
-
-		//13
-		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '0' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 13 is covered" << endl;
-			count[13]++;
-			temp[13] = primeImplicants[i];
-		}
-
-		//14
-		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '0' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 14 is covered" << endl;
-			count[14]++;
-			temp[14] = primeImplicants[i];
-		}
-
-		//15
-		if ((primeImplicants[i][0] == '1' || primeImplicants[i][0] == '-') && (primeImplicants[i][1] == '1' || primeImplicants[i][1] == '-') && (primeImplicants[i][2] == '1' || primeImplicants[i][2] == '-') && (primeImplicants[i][3] == '1' || primeImplicants[i][3] == '-')) {
-			//cout << "minterm 15 is covered" << endl;
-			count[15]++;
-			temp[15] = primeImplicants[i];
+	//putting all implicants in the vector of the minterm they cover
+	for (int i = 0; i < prime_implicants.size(); i++)
+	{
+		for (int j = 0; j < prime_implicants[i].minterms.size(); j++)
+		{
+			map<int, vector<implicant>>::iterator it2 = EPI_table.find(prime_implicants[i].minterms[j]);
+			(it2->second).push_back(prime_implicants[i]);
 		}
 	}
 
-	cout << "EPI:" << endl;
-
-	for (int i = 0; i < 16; i++) {
-		if (count[i] == 1) {
-			if (temp[i][0] == '-')
-				cout << "";
-			if (temp[i][0] == '0')
-				cout << "A'";
-			if (temp[i][0] == '1')
-				cout << "A";
-
-			if (temp[i][1] == '-')
-				cout << "";
-			if (temp[i][1] == '0')
-				cout << "B'";
-			if (temp[i][1] == '1')
-				cout << "B";
-
-			if (temp[i][2] == '-')
-				cout << "";
-			if (temp[i][2] == '0')
-				cout << "C'";
-			if (temp[i][2] == '1')
-				cout << "C";
-
-			if (temp[i][3] == '-')
-				cout << "";
-			if (temp[i][3] == '0')
-				cout << "D'";
-			if (temp[i][3] == '1')
-				cout << "D";
-
-			cout << endl;
+	//finding EPIs
+	map<int, vector<implicant>>::iterator it = EPI_table.begin();
+	for (it; it != EPI_table.end(); it++)
+	{
+		if ((it->second).size() == 1)
+		{
+			implicant temp = it->second[0];
+			for (int i = 0; i < temp.minterms.size(); i++)
+			{
+				//map<int, vector<implicant>>::iterator it2 = EPI_table[temp.minterms[i]];
+				//EPI_table.erase(temp.minterms[i]);
+				covered_by_EPIs.insert(temp.minterms[i]);
+			}
+			EPI.push_back(temp);
 		}
+	}
+	for (int i = 0; i < function_minterms.size(); i++)
+	{
+		if ((covered_by_EPIs).find(function_minterms[i]) == covered_by_EPIs.end())
+		{
+			not_covered_by_EPIs.push_back(function_minterms[i]);
+		}
+	}
+	cout << "Essential Prime Implicants: " << endl;
+
+	//output EPI
+	GenerateBoolean(EPI, no_of_variables);
+
+	//output minterms not covered by EPIs
+	cout << endl;
+	cout << "Minterms not covered by EPIs: \n";
+	for (int i=0; i<not_covered_by_EPIs.size(); i++)
+	{
+		cout << not_covered_by_EPIs[i] << " ";
 	}
 }
+
 /*
 * So the plan is to operate on 20 bits
 * Program converts these terms into a binary number and countes the number of 1s to identify chunk
@@ -583,5 +563,5 @@ void EPI(vector <implicant> prime_implicants, vector<int> minterms) {
 * If there is no next column, create it
 * If the combined implicant exists already, add the minterms combined into the object
 * If it doesn't exist, create the combined implicant accordingly (we'll need a function for that)
-* 
+*
 */
