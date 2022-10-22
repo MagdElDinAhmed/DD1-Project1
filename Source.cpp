@@ -351,7 +351,7 @@ vector<implicant> RemoveDup(vector<implicant> p, int no_of_var)
 	{
 		for (int i = 0; i < p[j].minterms.size(); i++)
 		{
-			cout << p[j].minterms[i] << "\t";
+			cout << p[j].minterms[i] << "\t" << p[j].imp << endl;
 		}
 	}
 
@@ -360,7 +360,7 @@ vector<implicant> RemoveDup(vector<implicant> p, int no_of_var)
 	{
 		for (int i = 0; i < p[j].dontcares.size(); i++)
 		{
-			cout << p[j].dontcares[i] << "\t";
+			cout << p[j].dontcares[i] << "\t" << p[j].imp << endl;
 		}
 	}
 	cout << endl;
