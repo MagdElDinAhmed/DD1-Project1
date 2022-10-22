@@ -20,6 +20,8 @@ int NumChunks(vector<implicant> terms);
 //vector<string> toString(vector<implicant> m);
 vector<implicant> RemoveDup(vector<implicant> p);
 vector<implicant> RemoveZeros(vector<implicant> p, int no_of_var);
+void GenerateBoolean(vector<implicant> PIs, int no_of_variables);
+
 
 int main()
 {
@@ -61,18 +63,18 @@ int main()
 	for(int i=0; i< prime_implicants.size(); i++)
 	cout << prime_implicants[i].imp << endl;
 
-	cout << endl << endl << endl;
+	cout << endl << endl;
 
 	vector<implicant> second= RemoveDup(prime_implicants);
-	cout << "removing duplicates" << endl;
-	for (int i = 0; i < second.size(); i++)
-	{
-		cout << second[i].imp << endl;
-	}
+	//cout << "removing duplicates" << endl;
+	//for (int i = 0; i < second.size(); i++)
+	//{
+	//	cout << second[i].imp << endl;
+	//}
 
 	vector<implicant> third = RemoveZeros(second, no_of_variables);
 
-	cout << "removing zeros" << endl;
+	cout << "Binary Representation:" << endl;
 
 	for (int i = 0; i < third.size(); i++)
 	{
@@ -81,6 +83,7 @@ int main()
 
 	//boolean expressions
 
+	GenerateBoolean(third, no_of_variables);
 }
 
 void Extract(vector<int>& fucntion_minterms, vector<int>& fucntion_dontcares, int& no_of_variables, bool& valid_in) //account for there being no don't cares
@@ -356,6 +359,30 @@ vector<implicant> RemoveZeros(vector<implicant> p, int no_of_var)
 	}
 
 	return p;
+}
+
+void GenerateBoolean(vector<implicant> PIs, int no_of_variables)
+{
+	for (int j = 0; j < PIs.size(); j++)
+	{
+		for (int i = 0; i < no_of_variables; i++)
+		{
+			if (PIs[j].imp[i] == '0')             
+			{
+				cout << "X" << i << "'";
+			}
+			else if (PIs[j].imp[i] == '1')
+			{
+				cout << "X" << i;
+			}
+			else if(PIs[j].imp[i] == '-')
+			{
+				cout << "";
+			}
+		}
+		if(j < PIs.size()-1)
+		cout << " +" << " ";
+	}
 }
 
 //   0111 0101 0011 0111 sample

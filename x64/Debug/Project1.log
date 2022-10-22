@@ -1,5 +1,5 @@
 ﻿  Source.cpp
-C:\Users\abdel\OneDrive\Documents\GitHub\DD1-Project1\Source.cpp(58,9): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\abdel\OneDrive\Documents\GitHub\DD1-Project1\Source.cpp(57,9): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 C:\Users\abdel\OneDrive\Documents\GitHub\DD1-Project1\Source.cpp(93,7): warning C4101: 'new_line_trash': unreferenced local variable
 C:\Users\abdel\OneDrive\Documents\GitHub\DD1-Project1\Source.cpp(153,11): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
 C:\Users\abdel\OneDrive\Documents\GitHub\DD1-Project1\Source.cpp(226,26): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
