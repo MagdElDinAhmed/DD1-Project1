@@ -5,9 +5,6 @@
 #include <cctype>
 #include<math.h>
 #include <set>
-#include <sstream>
-#include <string>
-#include <exception>
 
 //#include "InputLib.h"
 using namespace std;
@@ -21,8 +18,8 @@ vector<implicant> PrimeImp( vector<int> mint, vector<int> dc, int num_of_var);
 vector<implicant> ImplicantsList(vector<int> minterms, vector<int> dont_cares);
 int NumChunks(vector<implicant> terms);
 //vector<string> toString(vector<implicant> m);
-
-
+vector<implicant> RemoveDup(vector<implicant> p);
+vector<implicant> RemoveZeros(vector<implicant> p, int no_of_var);
 
 int main()
 {
@@ -59,10 +56,30 @@ int main()
 
 	prime_implicants = PrimeImp(function_minterms, function_dontcares, no_of_variables);
 
-
+	cout << endl;
 
 	for(int i=0; i< prime_implicants.size(); i++)
 	cout << prime_implicants[i].imp << endl;
+
+	cout << endl << endl << endl;
+
+	vector<implicant> second= RemoveDup(prime_implicants);
+	cout << "removing duplicates" << endl;
+	for (int i = 0; i < second.size(); i++)
+	{
+		cout << second[i].imp << endl;
+	}
+
+	vector<implicant> third = RemoveZeros(second, no_of_variables);
+
+	cout << "removing zeros" << endl;
+
+	for (int i = 0; i < third.size(); i++)
+	{
+		cout << third[i].imp << endl;
+	}
+
+	//boolean expressions
 
 }
 
@@ -297,22 +314,51 @@ vector<implicant> ImplicantsList(vector<int> minterms, vector<int> dont_cares)
 	}
 	return j;
 }
-/*
-vector<string> toString(vector<implicant> m)
+
+vector<implicant> RemoveDup(vector<implicant> p)
 {
-	vector<string> temp;
-	temp.resize(m.size());
 
-	int i = 0;
-
-	for (int j = 0; j <= m.size(); j++)
+	for (int i = 0; i < p.size(); i++)
 	{
-		i = m[j];
-		temp.push_back(to_string(i));
+		for (int j = 0; j < p.size(); j++)
+		{
+			if (p[i].imp == p[j].imp && i!=j) 
+			{    
+				p.erase(p.begin()+j);   
+			}
+		}
 	}
-}
-*/
 
+	return p;
+}
+
+vector<implicant> RemoveZeros(vector<implicant> p, int no_of_var)
+{
+	int n = 0;
+
+	cout << endl << endl << "Calling RemoveZeros Function" << endl;
+
+	if (no_of_var >= 0 && no_of_var < 20)
+	{
+		//remove from string
+	
+		n = no_of_var;
+		for (int j = 0; j < p.size(); j++)           
+		{
+				p[j].imp.erase(p[j].imp.begin(), p[j].imp.begin() + (20 - n));
+				cout << p[j].imp << endl;
+		}
+	}
+	else if(no_of_var > 20)
+	{
+		cout << "Invalid num of inputs" << endl;
+		return p;
+	}
+
+	return p;
+}
+
+//   0111 0101 0011 0111 sample
 
 /*
 * So the plan is to operate on 20 bits
