@@ -171,7 +171,7 @@ void Extract(vector<int>& fucntion_minterms, vector<int>& fucntion_dontcares, in
 bool CheckValidVarSize(string in, int no_of_variables)
 {
 	bool valid = true;
-	valid = (CheckRangeVarCount(in, 20) && CheckCharacter(in));
+	valid = (CheckCharacter(in) && CheckRangeVarCount(in, 20));
 	return valid;
 }
 
