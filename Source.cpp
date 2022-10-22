@@ -135,6 +135,11 @@ void Extract(vector<int>& fucntion_minterms, vector<int>& fucntion_dontcares, in
 			fucntion_dontcares.push_back(stoi(temp));
 		}
 	}
+
+	if (temp2 == "NA")
+	{
+		valid_in = true;
+	}
 }
 
 bool CheckValidVarSize(string in, int no_of_variables)
@@ -147,7 +152,7 @@ bool CheckValidTerm(string in, int no_of_variables, set<int>& terms)
 {
 	bool valid = true;
 	int size = (pow(2, no_of_variables) - 1);
-	valid = (CheckRangeTerm(in, size) && CheckCharacter(in) && (terms.find(stoi(in)) == terms.end()));
+	valid = (CheckCharacter(in) && CheckRangeTerm(in, size) && (terms.find(stoi(in)) == terms.end()));
 	if (valid)
 	{
 		terms.insert(stoi(in));
