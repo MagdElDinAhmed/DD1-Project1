@@ -34,7 +34,6 @@ int main()
 	vector<int> function_dontcares;
 	vector <implicant> prime_implicants;
 	int no_of_variables = -1; //dummy value
-	int w = 0;
 	bool valid_in = true; //default true value
 
 
@@ -243,9 +242,6 @@ vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
 	vector<implicant> imp; //a vector of implicants to implement in our chunk vector
 	vector<implicant> PrimeImplicantsList; //a vector to store all our prime implicants
 	vector<implicant> Has_it_all = ImplicantsList(mint, dc); //the disorganised list with all implicants from the first column
-	vector<int> forMerge; //Basmala please say what this does
-	int w = 0; //again Bsmala, give me a hand here
-	forMerge.resize(Has_it_all.size()); //help me
 
 	int num_of_chunks = NumChunks(Has_it_all); //number of chunks in the first column
 	chunk.resize(num_of_chunks + 1); //resizing the chunks in the first column to fit the necessary elements through direct access
