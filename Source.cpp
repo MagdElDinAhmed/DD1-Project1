@@ -18,7 +18,7 @@ vector<implicant> PrimeImp( vector<int> mint, vector<int> dc, int num_of_var);
 vector<implicant> ImplicantsList(vector<int> minterms, vector<int> dont_cares);
 int NumChunks(vector<implicant> terms);
 //vector<string> toString(vector<implicant> m);
-vector<implicant> RemoveDup(vector<implicant> p);
+vector<implicant> RemoveDup(vector<implicant> p, int no_of_var);
 vector<implicant> RemoveZeros(vector<implicant> p, int no_of_var);
 void GenerateBoolean(vector<implicant> PIs, int no_of_variables);
 
@@ -57,22 +57,24 @@ int main()
 
 		//cout << endl << endl;
 
-		vector<implicant> second = RemoveDup(prime_implicants);
+		//vector<implicant> second = RemoveDup(prime_implicants);
 
-		vector<implicant> third = RemoveZeros(second, no_of_variables);
+		prime_implicants = RemoveDup(prime_implicants, no_of_variables);
+			//	vector<implicant> third = RemoveZeros(second, no_of_variables);
+		//	prime_implicants = RemoveZeros(prime_implicants, no_of_variables);
 
 		cout << "Binary Representation:" << endl;
 
-		for (int i = 0; i < third.size(); i++)
+		for (int i = 0; i < prime_implicants.size(); i++)
 		{
-			cout << third[i].imp << endl;
+			cout << prime_implicants[i].imp << endl;
 		}
 
 		//boolean expressions for Prime Implicants
 
-		GenerateBoolean(third, no_of_variables);
+		GenerateBoolean(prime_implicants, no_of_variables);
 
-		cout << endl <<"Don't care terms covered by Prime Implicants:" << endl;
+		//cout << endl <<"Don't care terms covered by Prime Implicants:" << endl;
 
 
 	}
@@ -241,7 +243,7 @@ vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
 							vector<int> p = col[t][i][j].delta(col[t][i + 1][l].imp);
 							if (p.size() == 1)
 							{
-								implicant merged(col[t][i][j], col[t][i + 1][l], p);   //if 1, merge
+								implicant merged(col[t][i][j], col[t][i + 1][l], p);
 								if (col.size() < t + 2)
 								{
 									col.resize(col.size() + 1);
@@ -286,6 +288,11 @@ vector<implicant> PrimeImp(vector<int> mint, vector<int> dc, int num_of_var)
 		PrimeImplicantsList.push_back(col[col.size() - 1][col[col.size() - 1].size() - 1][i]);
 	}
 
+
+	//cout << "Minterms covered by Prime Implicants:" << endl;
+
+
+
 	return PrimeImplicantsList;
 }
 int NumChunks(vector<implicant> terms)
@@ -319,7 +326,7 @@ vector<implicant> ImplicantsList(vector<int> minterms, vector<int> dont_cares)
 	return j;
 }
 
-vector<implicant> RemoveDup(vector<implicant> p)
+vector<implicant> RemoveDup(vector<implicant> p, int no_of_var)
 {
 
 	for (int i = 0; i < p.size(); i++)
@@ -336,6 +343,27 @@ vector<implicant> RemoveDup(vector<implicant> p)
 		}
 	}
 
+
+	p = RemoveZeros(p, no_of_var);
+
+	cout << "Minterms covered by Prime Implicants: " << endl;
+	for (int j = 0; j < p.size(); j++)
+	{
+		for (int i = 0; i < p[j].minterms.size(); i++)
+		{
+			cout << p[j].minterms[i] << "\t";
+		}
+	}
+
+	cout << endl <<"Don't Care terms covered by Prime Implicants : " << endl;
+	for (int j = 0; j < p.size(); j++)
+	{
+		for (int i = 0; i < p[j].dontcares.size(); i++)
+		{
+			cout << p[j].dontcares[i] << "\t";
+		}
+	}
+	cout << endl;
 	return p;
 }
 
