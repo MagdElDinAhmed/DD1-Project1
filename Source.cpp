@@ -47,43 +47,39 @@ int main()
 		{
 			cout << function_dontcares[i] << " ";
 		}
+
+		prime_implicants = PrimeImp(function_minterms, function_dontcares, no_of_variables);
+
+		cout << endl;
+
+		//for (int i = 0; i < prime_implicants.size(); i++)
+		//	cout << prime_implicants[i].imp << endl;
+
+		//cout << endl << endl;
+
+		vector<implicant> second = RemoveDup(prime_implicants);
+
+		vector<implicant> third = RemoveZeros(second, no_of_variables);
+
+		cout << "Binary Representation:" << endl;
+
+		for (int i = 0; i < third.size(); i++)
+		{
+			cout << third[i].imp << endl;
+		}
+
+		//boolean expressions for Prime Implicants
+
+		GenerateBoolean(third, no_of_variables);
+
+		cout << endl <<"Don't care terms covered by Prime Implicants:" << endl;
+
+
 	}
 	else
 	{
 		cout << "invalid input";
 	}
-
-
-	w = pow(2, no_of_variables);
-
-	prime_implicants = PrimeImp(function_minterms, function_dontcares, no_of_variables);
-
-	cout << endl;
-
-	for(int i=0; i< prime_implicants.size(); i++)
-	cout << prime_implicants[i].imp << endl;
-
-	cout << endl << endl;
-
-	vector<implicant> second= RemoveDup(prime_implicants);
-	//cout << "removing duplicates" << endl;
-	//for (int i = 0; i < second.size(); i++)
-	//{
-	//	cout << second[i].imp << endl;
-	//}
-
-	vector<implicant> third = RemoveZeros(second, no_of_variables);
-
-	cout << "Binary Representation:" << endl;
-
-	for (int i = 0; i < third.size(); i++)
-	{
-		cout << third[i].imp << endl;
-	}
-
-	//boolean expressions
-
-	GenerateBoolean(third, no_of_variables);
 }
 
 void Extract(vector<int>& fucntion_minterms, vector<int>& fucntion_dontcares, int& no_of_variables, bool& valid_in) //account for there being no don't cares
@@ -339,17 +335,13 @@ vector<implicant> RemoveZeros(vector<implicant> p, int no_of_var)
 {
 	int n = 0;
 
-	cout << endl << endl << "Calling RemoveZeros Function" << endl;
-
 	if (no_of_var >= 0 && no_of_var < 20)
 	{
-		//remove from string
 	
 		n = no_of_var;
 		for (int j = 0; j < p.size(); j++)           
 		{
 				p[j].imp.erase(p[j].imp.begin(), p[j].imp.begin() + (20 - n));
-				cout << p[j].imp << endl;
 		}
 	}
 	else if(no_of_var > 20)
@@ -384,8 +376,6 @@ void GenerateBoolean(vector<implicant> PIs, int no_of_variables)
 		cout << " +" << " ";
 	}
 }
-
-//   0111 0101 0011 0111 sample
 
 /*
 * So the plan is to operate on 20 bits
