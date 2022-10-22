@@ -1,6 +1,5 @@
 ﻿  Source.cpp
-C:\Users\moham\OneDrive\Documents\GitHub\DD1-Project1\Source.cpp(122,7): warning C4101: 'new_line_trash': unreferenced local variable
-C:\Users\moham\OneDrive\Documents\GitHub\DD1-Project1\Source.cpp(187,11): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-C:\Users\moham\OneDrive\Documents\GitHub\DD1-Project1\Source.cpp(260,26): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\moham\OneDrive\Documents\GitHub\DD1-Project1\Source.cpp(281,30): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-  Project1.vcxproj -> C:\Users\moham\OneDrive\Documents\GitHub\DD1-Project1\x64\Debug\Project1.exe
+C:\Users\focka\OneDrive\Documents\AUC Files\Digital Design 1\Project\Project1\Source.cpp(189,11): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\focka\OneDrive\Documents\AUC Files\Digital Design 1\Project\Project1\Source.cpp(267,26): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\focka\OneDrive\Documents\AUC Files\Digital Design 1\Project\Project1\Source.cpp(289,30): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  Project1.vcxproj -> C:\Users\focka\OneDrive\Documents\AUC Files\Digital Design 1\Project\Project1\x64\Debug\Project1.exe
