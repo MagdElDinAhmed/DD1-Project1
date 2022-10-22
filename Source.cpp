@@ -223,6 +223,10 @@ bool CheckCharacter(string in)
 {
 	bool valid = true;
 	int i = 0;
+	if (in.length() == 0)
+	{
+		valid = false;
+	}
 	while (i < in.length() && valid)
 	{
 		if (isalpha(in[i]) || ispunct(in[i]))
