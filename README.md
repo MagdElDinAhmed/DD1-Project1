@@ -17,7 +17,7 @@ First, you will need to create a text file that contains the number of variables
 
 - The second line should contain a set of numbers that represent the minterms, separated by commas.
 
-- The third and final line should contain the don't care terms (if any), also separated by commas.
+- The third and final line should contain the don't care terms (if any, if there are not any, write NA on the third line), also separated by commas.
 
 #### Minimum Requirements
 
